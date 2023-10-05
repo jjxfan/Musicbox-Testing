@@ -1,5 +1,5 @@
-for FILE in ./configFiles/*
+for FILE in ../testScript/configFiles/*
 do
-./music_box $FILE
+../music_box $FILE
 
 done
