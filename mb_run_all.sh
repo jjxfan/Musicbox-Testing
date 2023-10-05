@@ -1,4 +1,4 @@
-for FILE in ./shell_script/folders/*
+for FILE in ./configFiles/*
 do
 ./music_box $FILE
 
