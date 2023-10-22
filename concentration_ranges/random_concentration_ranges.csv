@@ -1,0 +1,4 @@
+general_name,chemical_name,type,min,max,pow10
+Nitrous Dioxide,NO2,NOx,4,6,12
+Organic Compounds,RH,RH,5.0,100.0,5
+

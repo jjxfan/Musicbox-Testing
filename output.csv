@@ -1,0 +1,20 @@
+Basic Organic & NOx,Unnamed: 1,Unnamed: 2,Unnamed: 3,Unnamed: 4,Unnamed: 5,Unnamed: 6,Unnamed: 7,Unnamed: 8,Unnamed: 9,Unnamed: 10,Unnamed: 11,Unnamed: 12,Unnamed: 13,Unnamed: 14,Unnamed: 15,Unnamed: 16,Unnamed: 17,Unnamed: 18,Unnamed: 19,Unnamed: 20,Unnamed: 21,Unnamed: 22,Unnamed: 23,Unnamed: 24
+begin,PHOTOLYSIS,NO2,,,,NO,O,,,,,,,,,,,,,,,!,,jNO2
+begin,ARRHENIUS,O,O2,M,,O3,M,,,,,,,,,,,,,,,!,6e-34,0
+begin,ARRHENIUS,O3,NO,,,NO2,O2,,,,,,,,,,,,,,,!,1.8e-14,0
+begin,ARRHENIUS,RH,OH,,,RO2,H2O,,,,,,,,,,,,,,,!,2.63e-11,0
+begin,PHOTOLYSIS,HCHO,,,,2HO2,CO,,,,,,,,,,,,,,,!,,jHCHO->HO2
+begin,PHOTOLYSIS,HCHO,,,,H2,CO,,,,,,,,,,,,,,,!,,jHCHO->H2
+begin,ARRHENIUS,HCHO,OH,,,HO2,CO,H2O,,,,,,,,,,,,,,!,9.37e-12,0
+begin,ARRHENIUS,RCHO,OH,,,RCOO2,H2O,,,,,,,,,,,,,,,!,1.58e-11,0
+begin,ARRHENIUS,RO2,NO,,,NO2,RO,,,,,,,,,,,,,,,!,8.9e-12,0
+begin,ARRHENIUS,RCOO2,NO,,,NO2,RO2,CO2,,,,,,,,,,,,,,!,2.4e-11,0
+begin,ARRHENIUS,RO,O2,,,RCHO,H2O,,,,,,,,,,,,,,,!,1.9e-15,0
+begin,ARRHENIUS,HO2,NO,,,NO2,OH,,,,,,,,,,,,,,,!,8.6e-12,0
+begin,PHOTOLYSIS,O3,,,,O2,D,,,,,,,,,,,,,,,!,,jO3
+begin,ARRHENIUS,D,H2O,,,2OH,,,,,,,,,,,,,,,,!,2.2e-10,0
+begin,ARRHENIUS,RO2,HO2,,,H2O2,O2,,,,,,,,,,,,,,,!,5.6e-12,0
+begin,ARRHENIUS,HO2,O3,,,OH,2O2,,,,,,,,,,,,,,,!,2e-15,0
+begin,ARRHENIUS,OH ,NO2,,,HNO3,,,,,,,,,,,,,,,,!,2.8e-12,0
+begin,ARRHENIUS,2HO2,,,,H2O2,O2,,,,,,,,,,,,,,,!,1.4e-12,0
+begin,ARRHENIUS,RCOO2,NO2,,,PAN,,,,,,,,,,,,,,,,!,9.3e-12,0
