@@ -26,9 +26,10 @@ json_file_path_3='config/config.json'
 json_file_path_4='config/tolerance.json'
 
 # These seem important for other parts of the reactions.
-configfile='config/my_config_{num}.json'
-max_config = 10
-photofile='jan.photo'
+config_base = 'config/my_config.json'
+configfile_with_num='config/my_config_{num}.json'
+trials = 10
+photofile='nov15_lat35.photo'
 CompletePhotolysis = 'config/CompletePhotolysis.csv'
 photolysisfile = 'config/Photolysis.csv'
 
@@ -36,6 +37,9 @@ photolysisfile = 'config/Photolysis.csv'
 base_dir = "config"
 base_dir_1 = "config"
 
+# The file path for the file that stores initial concentrations and ozone concentrations at each time stamp
+concentration_file = 'concentration.csv'
+index_col = 'trial'
 
 #Conversion of excel file to csv
 input_file = pd.read_excel(inputfile)
@@ -46,7 +50,9 @@ input_file.to_csv(output_file, index=False)
 with open(csv_file_path, newline='') as csvfile:
     data = list(csv.reader(csvfile))
     
-
+# Time span
+output_step_time = 30 # In minutes
+length_of_simulation = 24 # In hours
     
 # Initialize the base JSON structure
 MEC_NAME = data[0][0]
@@ -71,7 +77,7 @@ reaction={}
 for row in data:
     if row and row[0].lower() == 'begin':
         if row[1] == "ARRHENIUS":
-            print(row)
+            # print(row)
             A = float(row[row.index('!') + 1])
             Ea =float(row[-1])
             reaction = {
@@ -172,7 +178,7 @@ for row in data:
                 "products": {},
                 "MUSICA name": row[-1],
                 }
-            print(row)
+            # print(row)
 
             reactants = row[2:4]
             products = row[5:row.index('!')]
@@ -543,8 +549,8 @@ data = {
     "box model options": {
         "grid": "box",
         "chemistry time step [min]": 0.1,
-        "output time step [min]": 6,
-        "simulation length [hr]": 24
+        "output time step [min]": output_step_time,
+        "simulation length [hr]": length_of_simulation
     },
     "chemical species": {},
     "environmental conditions": {
@@ -596,12 +602,36 @@ for species in added_species:
 ####
 ####
 
+def minute_to_second(minute):
+    return minute * 60
+
+def hour_to_second(hour):
+    return hour * 60 * 60
+
+concentration_data = {index_col: [i for i in range(trials)]}
+for conc in randomizer.get_random_compound_cols():
+    concentration_data[conc] = [0.0 for _ in range(trials)]
+for second in range(0, 
+                    hour_to_second(length_of_simulation), 
+                    minute_to_second(output_step_time)):
+    concentration_data[second] = [0.0 for _ in range(trials)]
+concentration_frame = pd.DataFrame(data=concentration_data)
+concentration_frame.set_index(index_col, inplace=True)
+
 # Writing to file & Randomizing concentrations some number of times.
-for i in range(0, max_config):
-    with open(configfile.format(num=i), 'w') as f:
-        randomizer.randomize_concentrations(data['chemical species'])
+for i in range(0, trials):
+    with open(configfile_with_num.format(num=i), 'w') as f:
+        concentrations = randomizer.randomize_concentrations(data['chemical species'])
+        # print(concentration_frame)
+        for conc in concentrations.keys():
+            concentration_frame.iloc[i][conc] = concentrations[conc]
         json.dump(data, f, indent=4)
 
+concentration_frame.to_csv(concentration_file)
+
+# with open(config_base, 'w') as f:
+#     concentrations = randomizer.randomize_concentrations(data['chemical species'])
+#     json.dump(data, f, indent=4)
 
 
 
@@ -816,8 +846,9 @@ except FileExistsError:
 
 # List of files to be copied
 json_files = [
-    (configfile.format(num=i)) for i in range(0, max_config)
+    (configfile_with_num.format(num=i)) for i in range(0, trials)
 ]
+# json_files = [config_base]
 json_files.append(photolysisfile)
 
 # Copy each file into the new directory
@@ -870,7 +901,7 @@ for file_path in json_files:
 # shutil.make_archive(output_zip_path, format='zip', root_dir=dir_nam, base_dir='config')
 
 '''
-Below is outdated, use above if zipping is needed.
+I can't get the below to work, use above if zipping is needed.
 '''
 # # Create a ZIP file and add the contents of the folder
 # with zipfile.ZipFile(output_zip_path, "w", zipfile.ZIP_DEFLATED) as zipf:

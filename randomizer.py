@@ -17,6 +17,9 @@ POW_10_COL = 'pow10'
 rand_species = pd.read_csv(RANDOM_FILE_NAME, index_col=False)
 set_species = pd.read_csv(FILE_NAME, index_col=False)
 
+
+# To store final concentrations
+
 # For the main configuration file
 CONCENTRATION_KEY = 'initial value [molecule cm-3]'
 
@@ -55,6 +58,7 @@ def randomize_concentrations(species_data):
 
     return totals_of_randomized_species
 
+    
 
 def set_concentrations(species_data):
     totals_of_randomized_species = {}
@@ -79,6 +83,17 @@ def set_concentrations(species_data):
 
     return totals_of_randomized_species
 
+def get_random_compound_cols():
+    items = []
+    for type in rand_species[TYPE_COL].unique():
+        items.append(type)
+    return items
+
+def get_compound_cols():
+    items = []
+    for type in set_species[TYPE_COL].unique():
+        items.append(type)
+    return items
 
 # sample_species = {
 #     "A": {CONCENTRATION_KEY: "0.0"},
