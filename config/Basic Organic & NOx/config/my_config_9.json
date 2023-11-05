@@ -1,0 +1,113 @@
+{
+    "box model options": {
+        "grid": "box",
+        "chemistry time step [min]": 0.1,
+        "output time step [hr]": 30,
+        "simulation length [hr]": 120
+    },
+    "chemical species": {
+        "NO2": {
+            "initial value [molecule cm-3]": "5.04E+12"
+        },
+        "NO": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "O": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "O2": {
+            "initial value [molecule cm-3]": "5.25E+18"
+        },
+        "M": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "O3": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "RH": {
+            "initial value [molecule cm-3]": "5.37E+15"
+        },
+        "OH": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "RO2": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "H2O": {
+            "initial value [molecule cm-3]": "2.5E+16"
+        },
+        "HCHO": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "HO2": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "CO": {
+            "initial value [molecule cm-3]": "12500000000000"
+        },
+        "H2": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "RCHO": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "RCOO2": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "RO": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "CO2": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "D": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "H2O2": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "OH ": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "HNO3": {
+            "initial value [molecule cm-3]": "0"
+        },
+        "PAN": {
+            "initial value [molecule cm-3]": "0"
+        }
+    },
+    "environmental conditions": {
+        "temperature": {
+            "initial value [K]": 298.15
+        },
+        "pressure": {
+            "initial value [Pa]": 101325.0
+        }
+    },
+    "evolving conditions": {
+        "Photolysis.csv": {
+            "linear combinations": {}
+        },
+        "CompletePhotolysis.csv": {
+            "linear combinations": {}
+        },
+        "Photolysis 5 days.csv": {
+            "linear combinations": {}
+        }
+    },
+    "initial conditions": {},
+    "model components": [
+        {
+            "type": "CAMP",
+            "configuration file": "camp_data/config.json",
+            "override species": {
+                "M": {
+                    "mixing ratio mol mol-1": 1.0
+                }
+            },
+            "suppress output": {
+                "M": {}
+            }
+        }
+    ]
+}

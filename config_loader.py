@@ -10,7 +10,9 @@ from multidict import MultiDict
 from collections import defaultdict
 import randomizer
 
-
+'''
+Loads a configuration file to be uploaded to music box.
+'''
 # inputfile is converted to a csv file
 # inputfile appears to be an excel file.
 # output_file appears to be replaceable with csv_file_path.
@@ -31,6 +33,7 @@ configfile_with_num='config/my_config_{num}.json'
 trials = 10
 photofile='nov15_lat35.photo'
 CompletePhotolysis = 'config/CompletePhotolysis.csv'
+photolysisForFiveDays = 'Photolysis 5 days.csv'
 photolysisfile = 'config/Photolysis.csv'
 
 # Where the output config file will be stored.
@@ -52,13 +55,11 @@ with open(csv_file_path, newline='') as csvfile:
     
 # Time span
 output_step_time = 30 # In minutes
-length_of_simulation = 24 # In hours
+length_of_simulation = 120 # In hours
     
+# Generate the mechanisms / reactions:
 # Initialize the base JSON structure
 MEC_NAME = data[0][0]
-
-
-
 
 json_data = {
     "camp-data": [
@@ -73,9 +74,10 @@ musica=[]
 reaction={}
 
 
-# Parse the csv data
+# Parse the csv data for reactions
 for row in data:
     if row and row[0].lower() == 'begin':
+        # Handling Arrhenius reactions
         if row[1] == "ARRHENIUS":
             # print(row)
             A = float(row[row.index('!') + 1])
@@ -170,7 +172,7 @@ for row in data:
                     
             json_data["camp-data"][0]["reactions"].append(reaction)
         
-        
+        # Handle photolysis reactions
         elif row[1] == "PHOTOLYSIS":
             reaction = {
                 "type": row[1],
@@ -273,6 +275,8 @@ for row in data:
             print("its a photolysis reaction")
             
             musica.append(reaction["MUSICA name"])
+
+        # Handle emission reactions
         elif row[1] == "EMISSION":
             spec=[]
             for i in range(2,7):
@@ -288,7 +292,7 @@ for row in data:
             
                
             
-                
+        # Handle First Order Loss Reactions
         elif row[1] == "FIRST_ORDER_LOSS":
             spec=[]
             for i in range(2,7):
@@ -302,7 +306,7 @@ for row in data:
                     "scaling factor": sc,}
                 json_data["camp-data"][0]["reactions"].append(reaction)
                
-              
+        # Handle Wet Deposition Reactions
         elif row[1] == "WET_DEPOSITION":
             sc=float(row[-1])
             reaction = {
@@ -312,6 +316,7 @@ for row in data:
                 }
             json_data["camp-data"][0]["reactions"].append(reaction)
 
+        # Handle CMAQ_H2O2 reactions
         elif row[1] == "CMAQ_H2O2":
             k1_A= float(row[2])
             k1_B = float(row[3])
@@ -346,6 +351,7 @@ for row in data:
             
             json_data["camp-data"][0]["reactions"].append(reaction) 
 
+        # Handle CMAQ_OH_HNO3 reactions
         elif row[1] == "CMAQ_OH_HNO3":
             k1_A = float(row[2])
             k1_B = float(row[3])
@@ -386,7 +392,7 @@ for row in data:
             
             json_data["camp-data"][0]["reactions"].append(reaction) 
 
-
+        # Handle TROE reactions
         elif row[1] == "TROE":
             k0_A = float(row[2])
             k0_B = float(row[3])
@@ -424,7 +430,7 @@ for row in data:
             json_data["camp-data"][0]["reactions"].append(reaction) 
  
 
-# Write to JSON file
+# Write to reactios JSON file
 with open(json_file_path, 'w') as jsonfile:
     json.dump(json_data, jsonfile, indent=4)
     print("Reaction.json File is Created Successfully")
@@ -435,9 +441,7 @@ with open(json_file_path, 'w') as jsonfile:
 with open(csv_file_path, newline='') as csvfile:
     data = list(csv.reader(csvfile))
 
-
-
-# Initialize the base JSON structure
+# Initialize the base JSON structure for species
 json_data = {
     "camp-data": [
         {
@@ -452,9 +456,10 @@ json_data = {
 # List to keep track of already added species
 added_species = []
 
-# Parse the csv data
+# Parse the csv data for species
 for row in data:
     if row and row[0].lower() == 'begin':
+        # For CMAQ_H2O2 species
         if row[1] == "CMAQ_H2O2":
             species = row[9:row.index('!')]
             for s in species:
@@ -466,7 +471,7 @@ for row in data:
                         added_species.append(s)
                         json_data["camp-data"].append({"type": "CHEM_SPEC", "name": s})
 
-             
+        # For CMAQ_OH_HNO3 species
         elif row[1] == "CMAQ_OH_HNO3":
             species = row[12:row.index('!')]
             for s in species:
@@ -478,6 +483,7 @@ for row in data:
                         added_species.append(s)
                         json_data["camp-data"].append({"type": "CHEM_SPEC", "name": s})
 
+        # For TROE species
         elif row[1] == "TROE":
             species = row[11:row.index('!')]
             for s in species:
@@ -488,7 +494,8 @@ for row in data:
                     else:
                         added_species.append(s)
                         json_data["camp-data"].append({"type": "CHEM_SPEC", "name": s})
-                   
+        
+        # All other types of species
         else:
             species = row[2:row.index('!')]
             local=[]
@@ -534,7 +541,7 @@ for row in data:
                     
 
 
-# Write to JSON file
+# Write to species JSON file
 with open(json_file_path_2, 'w') as jsonfile:
     json.dump(json_data, jsonfile, indent=4)
     print("Species.json File is Created Successfully")
@@ -549,7 +556,7 @@ data = {
     "box model options": {
         "grid": "box",
         "chemistry time step [min]": 0.1,
-        "output time step [min]": output_step_time,
+        "output time step [hr]": output_step_time,
         "simulation length [hr]": length_of_simulation
     },
     "chemical species": {},
@@ -565,6 +572,12 @@ data = {
         "Photolysis.csv": {
             "linear combinations": {}
         },
+        "CompletePhotolysis.csv": {
+            "linear combinations": {}
+        },
+        photolysisForFiveDays: {
+            "linear combinations": {}
+        }
     },
     "initial conditions": {},
     "model components": [
@@ -583,6 +596,7 @@ data = {
     ]
 }
 
+# Add all species to config to initialize concentrations
 for species in added_species:
     data['chemical species'][species] = {
         "initial value [molecule cm-3]": "0"
@@ -599,40 +613,44 @@ for species in added_species:
         data['chemical species'][species]['initial value [molecule cm-3]'] = "37500000000000"
         
 
-####
-####
+# # Time translator methods
+# def minute_to_second(minute):
+#     return minute * 60
 
-def minute_to_second(minute):
-    return minute * 60
+# def hour_to_second(hour):
+#     return hour * 60 * 60
 
-def hour_to_second(hour):
-    return hour * 60 * 60
+# # Set up the dataframe so that we're able to compare various types of concentrations
+# concentration_data = {index_col: [i for i in range(trials)]}
+# for conc in randomizer.get_random_compound_cols():
+#     concentration_data[conc] = [0.0 for _ in range(trials)]
+# for second in range(0, 
+#                     hour_to_second(length_of_simulation), 
+#                     minute_to_second(output_step_time)):
+#     concentration_data[second] = [0.0 for _ in range(trials)]
+# concentration_frame = pd.DataFrame(data=concentration_data)
+# concentration_frame.set_index(index_col, inplace=True)
 
-concentration_data = {index_col: [i for i in range(trials)]}
-for conc in randomizer.get_random_compound_cols():
-    concentration_data[conc] = [0.0 for _ in range(trials)]
-for second in range(0, 
-                    hour_to_second(length_of_simulation), 
-                    minute_to_second(output_step_time)):
-    concentration_data[second] = [0.0 for _ in range(trials)]
-concentration_frame = pd.DataFrame(data=concentration_data)
-concentration_frame.set_index(index_col, inplace=True)
+'''
+You can either choose to randomize once or randomize based on the number of trials present.
 
+The upper code will use however many trials exist, while the lower randomizes once.
+'''
 # Writing to file & Randomizing concentrations some number of times.
 for i in range(0, trials):
     with open(configfile_with_num.format(num=i), 'w') as f:
         concentrations = randomizer.randomize_concentrations(data['chemical species'])
-        # print(concentration_frame)
-        for conc in concentrations.keys():
-            concentration_frame.iloc[i][conc] = concentrations[conc]
+        # for conc in concentrations.keys():
+            # concentration_frame.iloc[i][conc] = concentrations[conc]
         json.dump(data, f, indent=4)
-
-concentration_frame.to_csv(concentration_file)
 
 # with open(config_base, 'w') as f:
 #     concentrations = randomizer.randomize_concentrations(data['chemical species'])
 #     json.dump(data, f, indent=4)
 
+### End of randomizer segment
+
+# concentration_frame.to_csv(concentration_file)
 
 
 
@@ -707,6 +725,7 @@ for i in range(0, len(keys)):
     updated_data_dict[updated_key] = value
 
 # FINDING MUSICA NAME IN KEYS'
+# Update X__X
 newfile_keys = []
 keys = list(updated_data_dict.keys())
 
@@ -805,7 +824,7 @@ write_dict_to_newcsv(data_dict, photolysisfile, newfile_keys)
 
 
 
-#MECHANISM FOR CREATING A 2 OTHER FILES:
+#MECHANISM FOR CREATING A 2 OTHER FILES (to add to config):
 
 json_data = {
   "camp-files": [
@@ -844,12 +863,21 @@ try:
 except FileExistsError:
     print(f"The directory {dir_nam} already exists")
 
+''' 
+This transfers the files into a seperate directory. The upper code should be used if you're using several trials,
+but the lower code is for if you've only generated once.
+'''
 # List of files to be copied
 json_files = [
     (configfile_with_num.format(num=i)) for i in range(0, trials)
 ]
+
 # json_files = [config_base]
+### End of code affecting the movement of my_config files.
+
 json_files.append(photolysisfile)
+json_files.append(CompletePhotolysis)
+json_files.append(photolysisForFiveDays)
 
 # Copy each file into the new directory
 for file_path in json_files:
@@ -859,7 +887,6 @@ for file_path in json_files:
         shutil.copy(file_path, dir_nam)
     else:
         print(f"The file {file_path} does not exist")
-
 
 
 base_dir = dir_nam
@@ -893,12 +920,12 @@ for file_path in json_files:
 
 #MECHANISM FOR zipping
 
-# dir_nam = os.path.join(base_dir_1, f"{MEC_NAME}") 
+dir_nam = os.path.join(base_dir_1, f"{MEC_NAME}") 
 
-# # Specify the output ZIP file path
-# output_zip_path = os.path.join(base_dir_1, f"{MEC_NAME}")  # Added '.zip' to the name
-# print(dir_nam)
-# shutil.make_archive(output_zip_path, format='zip', root_dir=dir_nam, base_dir='config')
+# Specify the output ZIP file path
+output_zip_path = os.path.join(base_dir_1, f"{MEC_NAME}")  # Added '.zip' to the name
+print(dir_nam)
+shutil.make_archive(output_zip_path, format='zip', root_dir=dir_nam, base_dir='config')
 
 '''
 I can't get the below to work, use above if zipping is needed.

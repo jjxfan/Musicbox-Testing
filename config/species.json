@@ -1,0 +1,102 @@
+{
+    "camp-data": [
+        {
+            "name": "M",
+            "type": "CHEM_SPEC",
+            "tracer type": "CONSTANT",
+            "description": "Third-body molecule. This is any molecule present in the system."
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "NO2"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "NO"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "O"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "O2"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "M"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "O3"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "RH"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "OH"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "RO2"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "H2O"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "HCHO"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "HO2"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "CO"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "H2"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "RCHO"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "RCOO2"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "RO"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "CO2"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "D"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "H2O2"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "OH "
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "HNO3"
+        },
+        {
+            "type": "CHEM_SPEC",
+            "name": "PAN"
+        }
+    ]
+}
