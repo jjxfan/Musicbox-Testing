@@ -38,14 +38,23 @@ for (file in files) {
     summary_data[paste0("t", d_compound_col, "max")] <- data$t[which.max(data[[d_compound_col]])]
     summary_data[paste0(d_compound_col, "min")] <- min(data[[d_compound_col]], na.rm = TRUE)
     summary_data[paste0("t", d_compound_col, "min")] <- data$t[which.min(data[[d_compound_col]])]
+    summary_data[paste0("init", d_compound_col)] <- data[1, compound]
   }
+  
+  summary_data[paste0("initCO")] <- data[1, "CO"]
+  summary_data[paste0("initCH4")] <- data[1, "CH4"]
+  summary_data[paste0("O3", "max")] = max(data["O3"], na.rm = TRUE)
+  summary_data[paste0("t", "O3", "max")] <- data$t[which.max(data[["O3"]])]
+  
+  
   
   # Append the summary data to the list
   data_list[[file]] <- summary_data
 }
 
 # Combine all summaries into a single data frame
-final_summary <- bind_rows(data_list)
+final_summary <- df <- do.call(rbind, lapply(data_list, function(x) as.data.frame(t(as.data.frame(x)))))
+
 
 # Write the final summary to an output file
-write_csv(final_summary, output_file)
+write.csv(final_summary, output_file, row.names = TRUE)
